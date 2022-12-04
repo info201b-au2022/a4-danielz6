@@ -25,7 +25,15 @@ View(total_jail_pop)
 #----------------------------------------------------------------------------#
 # Your functions and variables might go here ... <todo: update comment>
 #----------------------------------------------------------------------------#
-
+max_male_pop <- df %>%
+  filter(male_pop_15to64 == max(male_pop_15to64)) %>%
+  pull(male_pop_15to64)
+max_female_pop <- df %>%
+  filter(female_pop_15to64 == max(female_pop_15to64)) %>%
+  pull(female_pop_15to64)
+male_female_difference <- abs(max_male_pop - max_female_pop)
+  
+  
 ## Section 3  ---- 
 #----------------------------------------------------------------------------#
 # Growth of the U.S. Prison Population
@@ -75,9 +83,10 @@ plot_jail_pop_by_states <- function(states) {
   return(ggplot(get_jail_pop_by_states(states), aes(x = year, y = total_jail_pop, colour = state)) +
          geom_point(size = 0.8, alpha = 0.09) +
          geom_smooth(size = 2) +
-           theme_minimal() + labs(title = "Jail Population Distribution in the U.S. (1970-2018)", x = "Year", y = "Total Jail Population")
+           theme_minimal() + labs(title = "Jail Population Distribution in the U.S. By State (1970-2018)", x = "Year", y = "Total Jail Population")
            )
 }
+plot_jail_pop_by_states(c("WA", "CA", "NY", "NV"))
 ## Section 5  ---- 
 #----------------------------------------------------------------------------#
 # <variable comparison that reveals potential patterns of inequality>
@@ -85,17 +94,21 @@ plot_jail_pop_by_states <- function(states) {
 # See Canvas
 #----------------------------------------------------------------------------#
 race_in_jail <- function() {
-  df3 <- data.frame(AAPI_Population = sum(df$aapi_pop_15to64, na.rm = TRUE),
-                    black_population = sum(df$black_pop_15to64, na.rm = TRUE),
-                    latinx_population = sum(df$latinx_pop_15to64, na.rm = TRUE),
-                    native_population = sum(df$native_pop_15to64, na.rm = TRUE),
-                    white_population = sum(df$white_pop_15to64, na.rm = TRUE))
+  df3 <- data.frame(black_population = df$black_pop_15to64,
+                    white_population = df$white_pop_15to64)
   return(df3)
 }
 View(race_in_jail())
 race_plot <- function() {
-  scatterplot <- ggplot(race_in_jail(), aes(x = ))
+  scatterplot <- ggplot(race_in_jail(), aes(x = black_population, y = white_population)) +
+    geom_point() +
+    ggtitle("Black versus White Jail Population(ages 15-64)") +
+    labs(caption = "This plot shows the correlation between white and black population in the jail system.")
+  return(scatterplot)
 }
+
+
+race_plot()
 ## Section 6  ---- 
 #----------------------------------------------------------------------------#
 # <a map shows potential patterns of inequality that vary geographically>
@@ -103,6 +116,49 @@ race_plot <- function() {
 # See Canvas
 #----------------------------------------------------------------------------#
 
-## Load data frame ---- 
+
+# Create a blank map of U.S. states
+df4 <- data.frame("State" = df$state,
+                  "black_pop" = df$black_jail_pop,
+                  "Total_pop" = df$total_pop)
+
+ratio_diff <- df4 %>% summarize(state = State, ratio = total_pop/total_pop)
+
+
+
+map_total <- ratio_diff %>%
+  group_by(state) %>%
+  summarise(total_pop_per_state = mean(ratio, na.rm = TRUE))
+map_total[is.na(map_total)] = 0
+map_total[sapply(map_total, is.infinite)] <- 0
+
+map_total2 <- map_total %>%
+  mutate(full_name = tolower(state.name[match(map_total$state, state.abb)])) %>%
+  rename(abbr = state) %>%
+  rename(state = full_name)
+
+
+state_shape <- map_data("state") %>%
+  rename(state = region) %>%
+  left_join(map_total2, by = "state")
+
+
+plot_state <- function() {
+  ggplot(state_shape) +
+  geom_polygon(
+    mapping = aes(x = long, y = lat, group = group, fill = total_pop_per_state),
+    color = "white", # show state outlines
+    size = .1        # thinly stroked
+  ) +
+  coord_map() +# use a map-based coordinate system
+  scale_fill_continuous(low = "#D8D7D7", high = "#F0A8A8", limits = c(0,1)) +
+    labs(fill = "Ratio",
+         caption = "The population of total immates across America",
+         x = "",
+         y = "") +
+    theme(plot.caption = element_text(hjust = 0.5)) +
+    ggtitle("Distribution of total population of immates across America")
+}
+plot_state()
 
 

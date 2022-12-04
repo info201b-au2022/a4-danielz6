@@ -12,7 +12,7 @@ source("../source/analysis.R")
 
 ## Abstract
 
-[TODO: Include a short abstract (about 50 words)]
+This report analyzes incarceration data to detect any trends, ether through time or among population groups. Using data collected by Vera Institute, visuals representations were made This allows us to expose inequalities in our society, and the visuals allow this to be quickly realized.
 
 # Test (TODO: Remove before submission!!)
 
@@ -36,12 +36,39 @@ print(sum)
 
 ## Introduction
 
-[TODO]
+This report touches on a multitude of inequalities in the United States jail system. Firstly, there are disproportionate jail numbers that vary based on gender, race, and region. Specifically, this report will be analyzing gender and race. Given the racial prejudices, it is no surprise that there are many races that are disadvantaged. In addition, analyzing the number of people per gender in jail also yield an interesting inequality. A direct stakeholder is the United States Justice System, in which they can realize their prejudices and perhaps put this into consideration. The entire society is an indirect stakeholder, as they can all learn from this data to better police our society, or stay safe. In this report, we will discover the ratio between male and female incarceration rates, the growth of the U.S. prison population, the growth by state, black versus white incarceration rates, and finally total jail population by state.
 
 ## Data Summary
 
-[TODO]
+There are a few important variables to understand before we delve into the report. Firstly, the state with the max male jail incarceration has `max_male_pop()` . In addition, the state with the max female jail incarceration has `max_female_pop()`. Lastly, the difference between these is `male_female_difference`. This helps us understand a rough estimate of how genders are disproportionately incarcerated.
 
-[TODO ... other sections ... See Canvas for details]
+### Growth of the U.S. Prison Population
 
-*All the very best with your work!*
+```{r echo = TRUE}
+plot_jail_pop_for_us()
+```
+
+This graph shows the growth of the United States population numbers in jail. This graph answers the question, "How has the number of people in jail changed from 1970 to 2018?" As shown, the jail population have significantly gone up since the 1980s, but has been on a slight but steady decline since 2010. The growth between 1980 until 2010 looks linear, and there seems to be no growth before then. 1970 until 1980 looks completely flat, showing no change at all.
+
+### **Growth of Prison Population By State**
+
+```{r echo = TRUE}
+plot_jail_pop_by_states(c("WA", "OR", "NY", "CA"))
+```
+
+This shows the number of people in jail in the states of the California, New York, Oregon, and Washington. This answers the question, "How does the total jail population differ in the states, California, New York, Washington, and Oregon?" A clear pattern that is noticeable is that California has many more people in jail, more than double all of the other states. In addition, they all follow a similar pattern, with a rise between 1980 and 2000, then a slight decline nearing 2020 from 2005. I chose CA, WA, and OR because they are neighboring states on the west coast, and I wanted to see if there were any large discrepancies. New York was chosen because it is a super famous and dense city, and I was wondering how this would affect crime rates.
+
+### Black versus White Population Numbers in Jail
+
+```{r echo = TRUE}
+race_plot()
+```
+
+This scatterplot shows the extreme difference between the Black population numbers versus the White Population numbers in jail. This answers the question, "How does race affect the number of people in jail?" The black population is much outnumbering the white population, as the scales are completely different.
+
+```{r echo = TRUE}
+plot_state()
+
+```
+
+This map represents the ratio of each state to the total population of immates across the United States. This answers the question, "Which states has the most immates?". Some states that are slightly more shaded in include California. This is also consistent with the previous section, showing California was much higher than the rest.
