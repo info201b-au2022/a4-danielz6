@@ -8,16 +8,6 @@ source("../source/a4-helpers.R")
 #----------------------------------------------------------------------------#
 # Simple queries for basic testing
 #----------------------------------------------------------------------------#
-# Return a simple string
-test_query1 <- function() {
-  return ("Hello world")
-}
-
-# Return a vector of numbers
-test_query2 <- function(num=6) {
-  v <- seq(1:num)
-  return(v)
-}
 df <- read.csv("~/Documents/info201/data/incarceration_trends.csv")
 total_jail_pop <- get_data()
 View(total_jail_pop)
@@ -98,7 +88,6 @@ race_in_jail <- function() {
                     white_population = df$white_pop_15to64)
   return(df3)
 }
-View(race_in_jail())
 race_plot <- function() {
   scatterplot <- ggplot(race_in_jail(), aes(x = black_population, y = white_population)) +
     geom_point() +
@@ -119,15 +108,16 @@ race_plot()
 
 # Create a blank map of U.S. states
 df4 <- data.frame("State" = df$state,
+                  "black_pop" = df$black_jail_pop,
                   "Total_pop" = df$total_pop)
 
-ratio_diff <- df4 %>% summarize(state = State, ratio = total_pop/total_pop)
+ratio_diff <- df4 %>% summarize(state = State, pop_ratio = Total_pop/sum(Total_pop))
 
 
 
 map_total <- ratio_diff %>%
   group_by(state) %>%
-  summarise(total_pop_per_state = mean(ratio, na.rm = TRUE))
+  summarise(total_pop_per_state = mean(pop_ratio, na.rm = TRUE))
 map_total[is.na(map_total)] = 0
 map_total[sapply(map_total, is.infinite)] <- 0
 

@@ -14,7 +14,7 @@ source("../source/analysis.R")
 
 This report analyzes incarceration data to detect any trends, ether through time or among population groups. Using data collected by Vera Institute, visuals representations were made This allows us to expose inequalities in our society, and the visuals allow this to be quickly realized.
 
-# Test (TODO: Remove before submission!!)
+# Inequality in America's Jail System
 
 ```{r echo=FALSE}
 q1_string <- test_query1()
