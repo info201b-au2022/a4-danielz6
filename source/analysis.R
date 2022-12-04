@@ -119,7 +119,6 @@ race_plot()
 
 # Create a blank map of U.S. states
 df4 <- data.frame("State" = df$state,
-                  "black_pop" = df$black_jail_pop,
                   "Total_pop" = df$total_pop)
 
 ratio_diff <- df4 %>% summarize(state = State, ratio = total_pop/total_pop)
